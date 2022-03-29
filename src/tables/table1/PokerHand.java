@@ -36,7 +36,7 @@ public class PokerHand implements Comparable<PokerHand> {
         return cards;
     }
 
-    private void convertSymbolToValue(String text) {                        /** нужно добавить обработку ошибки ArrayOutOfBounds*/
+    private void convertSymbolToValue(String text) {
     try {
         int[] values = new int[5];
         for (int i = 0; i < text.length(); i += 3) {
