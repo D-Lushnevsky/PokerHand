@@ -11,9 +11,9 @@ public class PokerHand implements Comparable {
 
     public static void main(String[] args) {
         List<PokerHand> hands = new ArrayList<PokerHand>();
-        PokerHand hand1 = new PokerHand("QS 9H QC QD 9D");
+        PokerHand hand1 = new PokerHand("2S 2H 3C 3D 3D");
 
-        for (int k = 0; k < hand1.strengthHand.length; k++) {
+        for (int k = 0; k < hand1.strengthHand.length; k++) {                         /** для отладки*/
             System.out.println(hand1.strengthHand[k]);
         }
 
@@ -31,6 +31,9 @@ public class PokerHand implements Comparable {
             values[i / 3] = convertStringToNumeric(text.charAt(i));
         }
         Arrays.sort(values);
+        for (int k = 0; k < values.length; k++) {                               /** для отладки*/
+            System.out.println(values[k] + "!");
+        }
         strengthHand = convertCardValuesToStrengthOfHand(values);
     }
 
@@ -64,19 +67,14 @@ public class PokerHand implements Comparable {
         int combination = 0;
         int highInCombination = 0;
         int[] strength = new int[4];
-        for (int i = 0; i < cardsValues.length; i++) {
-            if (cardsValues[i] == cardsValues[i + 1]) {                             /** check Combination */
-                combination = +2;
-                highInCombination = checkHighInCombination(cardsValues, i);
-            }
+        for (int i = 0; i < cardsValues.length - 1; i++) {
             for (int j = i + 1; j < cardsValues.length; j++) {
-                if (cardsValues[j] == cardsValues[j + 1]) {
-                    combination = +2;
-                    highInCombination = checkHighInCombination(cardsValues, j);
+                if (cardsValues[i] == cardsValues[j]) {
+                    combination += 2;
+                    highInCombination = checkHighInCombination(cardsValues[j], highInCombination);
                 }
             }
         }
-
         if (combination == 0) {
             combination = checkStraight(cardsValues);
         }
@@ -88,14 +86,13 @@ public class PokerHand implements Comparable {
         return strength;
     }
 
-    private int checkHighInCombination(int[] cardsValues, int k) {
-        int highInCombination = 0;
-        if (cardsValues[k] == highInCombination) {
-            highInCombination = cardsValues[k] * 10;
-        } else if (cardsValues[k] > highInCombination) {
-            highInCombination = cardsValues[k];
+    private int checkHighInCombination(int value, int high) {              ////// ошибка возможно high постоянно обовляется и не запоминает предыдущее состояние
+        if (value == high) {
+            high = value * 10;
+        } else if (value > high) {
+            high = value;
         }
-        return highInCombination;
+        return high;
     }
 
     private int checkStraight(int[] cardsValues) {
