@@ -2,27 +2,43 @@ package tables.table1;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-public class PokerHand implements Comparable {
+public class PokerHand implements Comparable<PokerHand> {
     private String cards;
     private int[] strengthHand = new int[4];
 
 
     public static void main(String[] args) {
         List<PokerHand> hands = new ArrayList<PokerHand>();
-        PokerHand hand1 = new PokerHand("2S 2H 3C 3D 3D");
+        hands.add(new PokerHand("2S 2H 3C 3D 3D"));
+        hands.add(new PokerHand("4S 5C 6D 7S 8C"));
+        hands.add(new PokerHand("2S JC 2C 2D JS"));
+        hands.add(new PokerHand("2S TC 2C 2D TS"));
+        hands.add(new PokerHand("2S JC 2C 2D AS"));
 
-        for (int k = 0; k < hand1.strengthHand.length; k++) {                         /** для отладки*/
-            System.out.println(hand1.strengthHand[k]);
+        Collections.sort(hands);
+        Collections.reverse(hands);
+/**
+        for (int i = 0; i < hands.size(); i++) {
+            System.out.println(hands.get(i).getCards());
+
         }
-
-
+ */
     }
 
     public PokerHand(String allCards) {
         this.cards = allCards;
         this.convertSymbolToValue(cards);
+    }
+
+    public int[] getStrengthHand() {
+        return strengthHand;
+    }
+
+    public String getCards() {
+        return cards;
     }
 
     private void convertSymbolToValue(String text) {                        /** нужно добавить обработку ошибки ArrayOutOfBounds*/
@@ -31,9 +47,6 @@ public class PokerHand implements Comparable {
             values[i / 3] = convertStringToNumeric(text.charAt(i));
         }
         Arrays.sort(values);
-        for (int k = 0; k < values.length; k++) {                               /** для отладки*/
-            System.out.println(values[k] + "!");
-        }
         strengthHand = convertCardValuesToStrengthOfHand(values);
     }
 
@@ -86,7 +99,7 @@ public class PokerHand implements Comparable {
         return strength;
     }
 
-    private int checkHighInCombination(int value, int high) {              ////// ошибка возможно high постоянно обовляется и не запоминает предыдущее состояние
+    private int checkHighInCombination(int value, int high) {
         if (value == high) {
             high = value * 10;
         } else if (value > high) {
@@ -103,7 +116,7 @@ public class PokerHand implements Comparable {
             }
         }
         if (straight) {
-            return 5;
+            return 7;
         } else {
             return 0;
         }
@@ -120,8 +133,25 @@ public class PokerHand implements Comparable {
         return secondHigh;
     }
 
+
     @Override
-    public int compareTo(Object o) {
-        return 0;
+    public int compareTo(PokerHand o) {
+        if (this.strengthHand[0] == o.strengthHand[0]) {
+            if (this.strengthHand[1] == o.strengthHand[1]) {
+                if (this.strengthHand[2] == o.strengthHand[2]) {
+                    if (this.strengthHand[3] == o.strengthHand[3]) {
+                        return 0;
+                    } else {
+                        return this.strengthHand[3] - o.strengthHand[3];
+                    }
+                } else {
+                    return this.strengthHand[2] - o.strengthHand[2];
+                }
+            } else {
+                return this.strengthHand[1] - o.strengthHand[1];
+            }
+        } else {
+            return this.strengthHand[0] - o.strengthHand[0];
+        }
     }
 }
