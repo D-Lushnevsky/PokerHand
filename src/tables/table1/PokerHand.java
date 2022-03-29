@@ -12,6 +12,7 @@ public class PokerHand implements Comparable<PokerHand> {
 
     public static void main(String[] args) {
         List<PokerHand> hands = new ArrayList<PokerHand>();
+
         hands.add(new PokerHand("2S 2H 3C 3D 3D"));
         hands.add(new PokerHand("4S 5C 6D 7S 8C"));
         hands.add(new PokerHand("2S JC 2C 2D JS"));
@@ -20,12 +21,6 @@ public class PokerHand implements Comparable<PokerHand> {
 
         Collections.sort(hands);
         Collections.reverse(hands);
-/**
-        for (int i = 0; i < hands.size(); i++) {
-            System.out.println(hands.get(i).getCards());
-
-        }
- */
     }
 
     public PokerHand(String allCards) {
@@ -42,12 +37,18 @@ public class PokerHand implements Comparable<PokerHand> {
     }
 
     private void convertSymbolToValue(String text) {                        /** нужно добавить обработку ошибки ArrayOutOfBounds*/
+    try {
         int[] values = new int[5];
         for (int i = 0; i < text.length(); i += 3) {
             values[i / 3] = convertStringToNumeric(text.charAt(i));
         }
         Arrays.sort(values);
         strengthHand = convertCardValuesToStrengthOfHand(values);
+    }
+    catch (ArrayIndexOutOfBoundsException e) {
+        System.out.println("Ошибка, вышли за пределы массива. Программа завершена");
+    }
+
     }
 
     private int convertStringToNumeric(char ch) {
@@ -135,7 +136,8 @@ public class PokerHand implements Comparable<PokerHand> {
 
 
     @Override
-    public int compareTo(PokerHand o) {
+    public int compareTo(PokerHand o) throws ClassCastException, IllegalAccessError,
+            UnsupportedOperationException {
         if (this.strengthHand[0] == o.strengthHand[0]) {
             if (this.strengthHand[1] == o.strengthHand[1]) {
                 if (this.strengthHand[2] == o.strengthHand[2]) {
